@@ -14,8 +14,7 @@
 
   var root = isNode ? {
     _: require('underscore'),
-    Backbone: require('backbone'),
-    Globalize: require('globalize')
+    Backbone: require('backbone')
   } : window;
 
   ////////////////////

@@ -1,0 +1,15 @@
+{
+  "name": "backbone.view-router", 
+  "version": "0.0.1",
+  "description": "Organize Backbone routes into intuitive 'views', reverse matching a view to the appropriate route and page title",
+  "keywords": [ "backbone", "URL", "router", "utilities", "plugin"],
+  "license" : "MIT", 
+  "scripts" : [
+    "src/view-router.js"
+  ],
+  "main" : "src/view-router.js",
+  "dependencies": {
+    "jashkenas/backbone": "1.1.2",
+    "jashkenas/underscore": "1.6.0"
+  }
+}

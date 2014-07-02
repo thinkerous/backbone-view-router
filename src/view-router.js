@@ -7,13 +7,12 @@
 
   var root = isNode ? {
     _: require('underscore'),
-    Backbone: require('backbone'),
-    Globalize: require('globalize')
+    Backbone: require('backbone')
   } : window;
 
   ////////////////////
 
-  (isNode ? exports : Backbone).Schema = factory(root, isNode);
+  (isNode ? exports : Backbone).ViewRouter = factory(root, isNode);
 
 }(function (root) {
   'use strict';
