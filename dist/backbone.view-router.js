@@ -31,7 +31,7 @@
     views: {},
     titles: {},
     buffered: false, 
-    titleRoot: "",
+    titleRoot: null,
     
 
     ////////////////////////////////////////////////////////////////////
@@ -51,14 +51,15 @@
       },this);
 
       // Views --> Titles
+      if(titles && this.titleRoot === null){
+        this.titleRoot = "";
+      }
       _.extend(this.titles, (titles || {}));
     }, 
 
     // Short cut for using revRoute and then navigating
     goToView: function(view, model, options){
       var route = this.revRoute(view, model);
-      var currentRoute = Backbone.history.getFragment().replace(this._cleanFragment,"");
-      if(route === currentRoute) return;  
 
       this.updateTitle(view, model); 
       return this.navigate(route, options);
@@ -71,25 +72,20 @@
       var parts = route.split(/\//);
                               route = _.map(parts,function(v){
         return v.replace(/^:([^()]+).*/,function(str, prop){
-return "" + model.get(prop); 
+          var val = model.get(prop);
+          // Check for missing attributes
+          if(!val) throw "Unmatched Route Element: " + prop;
+          return "" + val; 
         });
       }).join('/');
-
-      // Runtime check: revRoute replaced all the necessary elements!
-      var unmatched = route.match(/:[^\/?]*/);
-      if (unmatched !== null){
-        var elements = "";
-        _.each(unmatched,function(e){ 
-          elements += e.substr(1) + " ";
-        });
-        throw "Unmatched Route Elements: " + elements; 
-      }
 
       return route;
     }, 
 
     // This function updates the page title based on a view and model
     updateTitle: function(view, model){
+      if(this.titleRoot === null)
+        return;
       var title = this.titleRoot + (this.titles[view] || ""); 
       document.title = title.replace(/<([A-Za-z_]+)>/g,function(str,v){
         return "" + model.get(v);
@@ -101,21 +97,11 @@ return "" + model.get(prop);
     // Private Functions
     ////////////////////////////////////////////////////////////////////
 
-    // URL managment RegExs
-    _cleanFragment: /\?.*$/,
-
-    // Override the default navigate function for a router to allow it to keep state
-    // state when desired.
-    navigate: function(fragment, options){
-      options = (options || {query : ""});
-      if(options.query){
-        fragment = fragment + ( options.query || "" );
+    constructor: function(options){
+      Backbone.Router.prototype.constructor.apply(this, arguments);
+      if(options && options.titleRoot){
+        this.titleRoot = options.titleRoot;
       }
-      Backbone.history.navigate(fragment, options);
-    }, 
-
-    _getUrl: function(){
-      return Backbone.history.location.pathname.substr(1);
     }
   });
 
