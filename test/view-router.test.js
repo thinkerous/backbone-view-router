@@ -64,6 +64,9 @@
 
         viewRouter.updateTitle('itemView', project);
         expect(document.title).to.equal('View-Router | foobar')
+        
+        viewRouter.updateTitle('undefined', project);
+        expect(document.title).to.equal('')
       });
 
       it('should handle URL on #goToView()', function(){

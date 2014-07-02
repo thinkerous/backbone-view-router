@@ -83,7 +83,7 @@ return "" + model.get(prop);
 
     // This function updates the page title based on a view and model
     updateTitle: function(view, model){
-      var title = this.titleRoot + this.titles[view]; 
+      var title = this.titleRoot + (this.titles[view] || ""); 
       document.title = title.replace(/<([A-Za-z_]+)>/g,function(str,v){
         return "" + model.get(v);
       });
