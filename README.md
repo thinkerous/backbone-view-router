@@ -11,30 +11,61 @@ this with that mentality. For example, /projects should point to a "viewProjects
 would correspond to a controller function of the same name. 
 
 Optionally the router handles the page title updates which can happen automatically when going
-to the corresponding view. If a view isn't registered with a title it will be updated to the `viewRouter.titleRoot` variable. 
+to the corresponding view. If a view isn't registered with a title it will be updated to the 
+`ViewRouter.titleRoot` variable. 
 
 # Use
+## View Registering
 This router first registers views in a similar way to registering routes in the Backbone.Router.
 At the same time these views can be registered to page titles optionally. 
 
 ```
-  ViewRouter.registerViews({
+  var viewRouter = new Backbone.ViewRouter();
+  viewRouter.registerViews({
+      // List of routes
+      ""              : "home",
+      "projects"      : "listProjects", 
+      "projects/:id"  : "viewProject"
+    });
+```
+
+Then the following functions can then be called (note the model must have corresponding
+`id` and `name` attributes, say they are "1234" and "foobar" respectively).
+
+```
+  viewRouter.revRoute("listProjects") // Returns "projects"
+
+  viewRouter.goToView("listProjects") // URL set to "/projects", triggers route, 
+
+  viewRouter.goToView("viewProject")  // URL set to "/projects/1234", triggers route, 
+```
+
+## Page Title Registering
+By default page titles will not be modified unless one of these conditions is met: 
+* ViewRouter is initialized with `{ titleRoot: "someString" }` as an option
+* #registerViews is called with a second object parameter (shown below)
+
+If the first condition is not met, the second condition will imply the `titleRoot` to 
+be `""` by default.
+
+```
+  var viewRouter = new Backbone({titleRoot: "View-Router"})
+  viewRouter.registerViews({
       // List of routes
       ""              : "home",
       "projects"      : "listProjects", 
       "projects/:id"  : "viewProject"
     },{
-      "home"         : "View-Router"
-      "listProjects" : "View-Router | Projects"
-      "viewProject"  : "View-Router | <name>"
+      "home"         : ""
+      "listProjects" : " | Projects"
+      "viewProject"  : " | <name>"
     });
 ```
 
-Then the following functions can then be called with predicable results (note the model must have corresponding
-`id` and `name` attributes, say they are "1234" and "foobar" respectively).
+Now the following functions can be used: 
 
 ```
-  ViewRouter.revRoute("listProjects") // Returns "projects"
+  ViewRouter.updateTitle("home")      // Page title set to "View-Router"
 
   ViewRouter.goToView("listProjects") // URL set to "/projects", triggers route, 
                                       // page title set to "View-Router | Projects" 
